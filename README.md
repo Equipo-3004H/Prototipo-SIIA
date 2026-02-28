@@ -3,20 +3,26 @@
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![HuggingFace](https://img.shields.io/badge/huggingface-%23FFD21E.svg?style=for-the-badge&logo=huggingface&logoColor=white)
 
-<p>
+
 Este repositorio forma parte del trabajo 
-"Monitoreo y detección de lenguaje agresivo multimodal para prevenir el maltrato a Adultos Mayores." del Equipo 3004H para la asignatura de Seminario de Innovación en Inteligencia Artificial (SIIA) de la Maestría en Inteligencia Artificial de UNIR México.<br> El trabajo tiene como objetivo desarrollar una herramienta tecnológica basada en Inteligencia Artificial (IA) para monitorizar y prevenir el maltrato psicológico hacia el adulto mayor, facilitando un envejecimiento saludable de los mismos. <br>
-La solución propuesta capturará conversaciones, transcribirá el audio a texto y detectará agresiones mediante un enfoque multimodal: análisis de la tonalidad en el audio y análisis semántico del texto.  
-</p>
+"Monitoreo y detección de lenguaje agresivo multimodal para prevenir el maltrato a Adultos Mayores." del Equipo 3004H para la asignatura de Seminario de Innovación en Inteligencia Artificial (SIIA) de la Maestría en Inteligencia Artificial de UNIR México. El trabajo tiene como objetivo desarrollar una herramienta tecnológica basada en Inteligencia Artificial (IA) capaz de detectar el lenguaje agresivo en conversaciones mediante un enfoque multimodal que integra:
 
-````
-DEMO técnico del prototipo
-Frontend: https://prototipo-siia-9elu.onrender.com/ 
-Backend Api: https://prototipo-siia.onrender.com`
+- Análisis de la tonalidad del audio.
+- Análisis semántico del texto transcrito.
+- Ensamble de modelos para la decision final.
 
-````
-<!-- Swagger del Backend: https://prototipo-siia.onrender.com/docs -->
-<!-- Documentacion tecnica del Backend: https://prototipo-siia.onrender.com/docs -->
+La finalidad es contribuir a la detección temprana de posibles situaciones de maltrato psicológico hacia adultos mayores, facilitando un envejecimiento saludable de los mismos. 
+
+
+### DEMO técnico del prototipo desplegado en Render
+|Componente|Url|
+|--|--|
+|Frontend (Client)|https://prototipo-siia-9elu.onrender.com/ |
+|Backend (API)|https://prototipo-siia.onrender.com/|
+|Swagger (API docs)|https://prototipo-siia.onrender.com/docs|
+|Documentación técnica (ReDoc)|https://prototipo-siia.onrender.com/|
+
+
 
 ## Tabla de contenido
 
@@ -41,9 +47,10 @@ Backend Api: https://prototipo-siia.onrender.com`
 
 ### 2. Objetivos
 
-El objetivo principal es implementar una solución de IA que realice análisis de tonalidades en voz y clasificación de texto para identificar lenguaje agresivo de forma automática.
+#### Objetivo general:
+Implementar una solución de IA multimodal que permita identificar lenguaje agresivo mediante análisis de audio y texto en conversaciones casi en tiempo real.
 
-Los objetivos específicos de la solución de IA son:
+#### Objetivos específicos 
 
 - Capturar y transcribir conversaciones de dos personas casi en tiempo real.
   - Mantener una latencia de máximo 500ms.
@@ -67,18 +74,45 @@ Los objetivos específicos de la solución de IA son:
 
 ### 4. Arquitectura del sistema
 
+Arquitectura cliente servidor desacoplada
 <!-- ![Diagrama de la solución](/resources/diagrama_solucion.png) -->
 
+#### Frontend
+- Captura audio.
+- Envía el audio al backend.
+- Muestra la transcripción y resultados en pantalla.
+
+#### Backend
+- Recibe el audio.
+- Realiza el proceso de transcripción.
+- Clasifica el audio con el modelo de análisis prosódico.
+- Clasifica el texto transcrito utilizando el modelo de análisis de sentimientos.
+- Ejecuta el ensamble de modelos.
+- Devuelve los resultados al frontend.
+
+### 5. CI/CD
+El proyecto implementa Integracion Continua, Despliegie Continuo (CI/CD) utilizando GitHub y Rendeer.
+Se utiliza un modelo de despliegue automatico, donde cada actualizacion en la rama configurada activa el proceso de construccion y publicacion de los servicios web para frontend y backend.
+
+Flujo de despliegue
+1. Push a repositorio GitHub.
+2. Render detecta cambios en la rama configurada.
+3. Instalación automática de dependencias.
+4. Construcción del servicio.
+5. Despliegue automático del servicio en la nube.
+
+Esto permite mantener el prototipo disponible en una URL publica sin intervención manual.
 
 ### 5. Tecnologías
 
-Se utiliza Python como lenguaje de programación.
+Lenguaje de programación
+- Python 3.9
 
 Frontend
 
 | Herramienta/librería | Version | Uso dentro del proyecto |
 | -------------------- | --------------- | --------------- |
-|   streamlit       | 1.54.0 |     |
+|   streamlit       | 1.50.0 | Interfaz gráfica    | 
 |         |   | 
 |  |    |
  
@@ -117,6 +151,9 @@ Repositorio
 ```
 
 - **prototipo-client/**: contiene la aplicación cliente encargada de la captura de audio y visualización de resultados.
+ - `app.py`: pagina principal del cliente de streamlit.  
+  - `.python-version`: especifica la versión de Python utilizada en el entorno.  
+  - `requirements.txt`: lista las dependencias necesarias para ejecutar el frontend.
 - **prototipo-api/**: implementa el backend del sistema utilizando FastAPI para exponer los servicios del proyecto.  
   - `main.py`: punto de entrada donde se definen los endpoints del servicio.  
   - `.python-version`: especifica la versión de Python utilizada en el entorno.  
@@ -126,7 +163,10 @@ Repositorio
 
 ### 7. Requisitos
 
-<!-- Que programas necesito para levantar el repo  -->
+- Git bash / Git Desktop
+- Python 3.9
+- Entorno virtual (venv o conda)
+- Visual Studio Code o terminal
 
 ### 8. Instalación
 
@@ -137,18 +177,61 @@ Para clonar el repositorio de manera local se utiliza el siguiente código:
 git clone https://github.com/Equipo-3004H/Prototipo-SIIA.git 
 cd Prototipo-SIIA
 ````
-#### 8.2 Instalar dependencias 
 
+#### 8.2 Crear entorno virtual
+
+```
+python -m venv venv
+source venv/bin/activate   # mac/linux
+venv\Scripts\activate      # windows
+```
+
+
+#### 8.3 Instalar dependencias 
+
+Tanto el frontend como el backend cuentan con un archivo `requirements` el cual contiene todas las dependencias necesarias para levantar cada solución 
+
+````
+pip install -r requirements.txt
+````
 
 
 ### 9. Uso
 
-<!-- Como se puede levantar el repo -->
-<!-- Front -->
-<!-- Back -->
+#### Backend
+
+Para levantar el repositorio del backend se ejecuta el siguiente comando en la terminal 
+
+<!-- #fastapi dev main.py -->
+
+``` 
+uvicorn main:app --reload
+```
+Accesos:
+- Api local: http://127.0.0.1:8000/
+- Swagger: http://127.0.0.1:8000/docs
+- ReDoc: http://127.0.0.1:8000/redoc
+
+#### Frontend
+Para levantar el repositorio del frontend se ejecuta el siguiente comando en la terminal
+
+``` 
+streamlit run app.py
+```
+Streamlit se levanta en la siguiente direccion 
+ 
+Acceso local: http://localhost:8501/
+
 
 ### 10. Datasets
 
+Para el entrenamiento de los modelos se utilizan datasets publicos
+
+|Dataset|Tipo|Descripción|
+|--|--|--|
+||||
+||||
+||||
 <!-- para entrenamiento -->
 <!--  -->
 
