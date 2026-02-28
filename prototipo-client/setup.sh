@@ -25,7 +25,6 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     else
         echo "Detected Linux (assuming Debian/Ubuntu), using apt-get for installation"
         cat /etc/os-release
-        
         apt-get install -y portaudio19-dev wget
     fi
 else
