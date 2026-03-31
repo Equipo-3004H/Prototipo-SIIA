@@ -1,6 +1,10 @@
 FROM python:3.10-slim
 
-WORKDIR /code
+# Variables de entorno recomendadas
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
 
 COPY requirements.txt .
 
