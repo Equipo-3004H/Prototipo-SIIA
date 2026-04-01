@@ -33,16 +33,15 @@
 * [10. Uso](#10-uso)
 * [11. API Endpoints](#11-api-endpoints)
 * [12. Docker](#12-docker)
-* [13. CI/CD](#13-cicd)
-* [14. Origen de Datos](#14-origen-de-datos)
-* [15. Datasets](#15-datasets)
-* [16. Integración de los Datasets](#16-integración-de-los-datasets)
-* [17. Selección del Modelo](#17-selección-del-modelo)
-* [18. Pipeline de Entrenamiento del Modelo](#18-pipeline-de-entrenamiento-del-modelo)
-* [19. Entrenamiento y Evaluación del Modelo](#19-entrenamiento-y-evaluación-del-modelo)
-* [20. Bibliotecas Utilizadas](#20-bibliotecas-utilizadas)
-* [21. Referencias](#21-referencias)
-* [22. Trabajo Futuro](#22-trabajo-futuro)
+* [13. Origen de Datos](#13-origen-de-datos)
+* [14. Datasets](#14-datasets)
+* [15. Integración de los Datasets](#15-integración-de-los-datasets)
+* [16. Selección del Modelo](#16-selección-del-modelo)
+* [17. Pipeline de Entrenamiento del Modelo](#17-pipeline-de-entrenamiento-del-modelo)
+* [18. Entrenamiento y Evaluación del Modelo](#18-entrenamiento-y-evaluación-del-modelo)
+* [19. Bibliotecas Utilizadas](#19-bibliotecas-utilizadas)
+* [20. Referencias](#20-referencias)
+* [21. Trabajo Futuro](#21-trabajo-futuro)
 
 ---
 
@@ -227,28 +226,12 @@ http://localhost:8000/docs
 
 ---
 
-## 13. CI/CD en Render
-
-El proyecto implementa Integración Continua y Despliegue Continuo utilizando GitHub y Render.
-
-Flujo de despliegue:
-
-1. Push a repositorio GitHub.
-2. Render detecta cambios en la rama configurada.
-3. Instalación automática de dependencias.
-4. Construcción del servicio.
-5. Despliegue automático del servicio en la nube.
-
-Esto permite mantener el servicio disponible en una URL pública sin intervención manual.
-
----
-
-## 14. Origen de Datos
+## 13. Origen de Datos
 Los conjuntos de datos utilizados para el entrenamiento del modelo de clasificación de lenguaje ofensivo fueron obtenidos desde la plataforma de Hugging Face, la cual proporciona acceso a modelos previamente entrenados y a conjuntos de datos creados y utilizados por la comunidad en tareas de procesamiento del lenguaje natural.
 
 ---
 
-## 15. Datasets
+## 14. Datasets
 
 * manueltonneau/spanish-hate-speech-superset
 * SINAI/OffendES
@@ -263,18 +246,18 @@ Como complemento al dataset anterior, se utilizó el conjunto de datos SINAI/Off
 
 ---
 
-## 16. Integración de los Datasets
+## 15. Integración de los Datasets
 Una vez fueron preprocesados los conjuntos de datos utilizados para el entrenamiento, fue necesario realizar un proceso de integración y unificación de los datasets para poder utilizarlos de forma conjunta en el proceso de entrenamiento del modelo.
 El primer conjunto se dividió en subconjuntos de entrenamiento, prueba y validación. De esta manera se aseguró que ambos conjuntos de datos contaran con la misma estructura. Posteriormente los tres subconjuntos de ambos datasets fueron concatenados entre si según el uso que se les daría en el proceso de entrenamiento del modelo. 
 
 ---
 
-## 17. Selección del Modelo
+## 16. Selección del Modelo
 Se seleccionó RoBERTuito un modelo preentrenado en español basado en el modelo RoBERTa. La selección de este modelo se realizó debido a su desempeño en tareas de procesamiento de lenguaje natural, alcanzando puntuaciones altas de macro F1 en comparación a los otros modelos 
 
 ---
 
-## 18. Pipeline de Entrenamiento del Modelo
+## 17. Pipeline de Entrenamiento del Modelo
 El pipeline incluye:
 
 * Carga de datasets
@@ -288,7 +271,7 @@ El pipeline incluye:
 
 ---
 
-## 19. Entrenamiento y Evaluación del Modelo
+## 18. Entrenamiento y Evaluación del Modelo
 
 Se utilizó la clase trainer de la librería Transformers de Hugging Face, la cual permite ejecutar el proceso de entrenamiento, validación, evaluación y almacenamiento del modelo en el Hub de Hugging Face. Antes del entrenamiento se configuraron los hiperparámetros del modelo. 
 
@@ -306,11 +289,16 @@ Se utilizó la clase trainer de la librería Transformers de Hugging Face, la cu
 | Carga del mejor modelo al finalizar | Sí |
 | Publicación en Hugging Face | No |
  
-En los resultados del entrenamiento se observa que el mejor modelo se obtuvo en la primera época, ya que la pérdida del entrenamiento y validación presentan valores cercanos. Esto se puede comprobar al ejecutar la función trainer.state.best_metric el cual devuelve 0.871749 como la métrica del mejor modelo. 
+En los resultados del entrenamiento se observa que el mejor modelo al ejecutar la función trainer.state.best_metric el cual devuelve 0.871749 como la métrica del mejor modelo. 
+
+El modelo se almacenó en el hub de Hugging Face en el siguiente repositorio:
+```
+ https://huggingface.co/sarahi-rdz/fine-tuning
+```
 
 ---
 
-## 20. Bibliotecas Utilizadas en el Entrenamiento
+## 19. Bibliotecas Utilizadas en el Entrenamiento
 
 
 Para la implementación del flujo de entrenamiento, evaluación e inferencia del modelo RoBERTuito se utilizaron diversas bibliotecas de Python especializadas en procesamiento de lenguaje natural, carga de datos, entrenamiento y evaluación de modelos de aprendizaje automático.
@@ -330,7 +318,7 @@ Las principales bibliotecas utilizadas forman parte del ecosistema de Hugging Fa
 
 ---
 
-## 21. Referencias
+## 20. Referencias
 
 ### Modelo
 
@@ -363,7 +351,7 @@ Las principales bibliotecas utilizadas forman parte del ecosistema de Hugging Fa
 
 ---
 
-## 22. Trabajo Futuro
+## 21. Trabajo Futuro
 
 * Mejorar balance de clases
 * Implementar monitoreo del modelo
