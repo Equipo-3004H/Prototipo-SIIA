@@ -1,4 +1,8 @@
 # Byte-compiled / optimized / DLL files
+best_model/
+hf_cache/
+.env
+*.pyc
 __pycache__/
 *.py[codz]
 *$py.class
