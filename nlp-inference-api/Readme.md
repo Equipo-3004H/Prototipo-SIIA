@@ -207,6 +207,16 @@ Accesos:
 
 ---
 
+## 11. API Endpoints
+
+| Endpoint             | Método | Descripción                         |
+| -------------------- | ------ | ----------------------------------- |
+| /                    | GET    | Verifica que la API esté corriendo  |
+| /health              | GET    | Verifica que el modelo esté cargado |
+| /sentiment-analysis/ | POST   | Clasificación de texto              |
+
+---
+
 ## 12. Docker
 
 ### Construir imagen
