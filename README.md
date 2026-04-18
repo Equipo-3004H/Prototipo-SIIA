@@ -1,102 +1,137 @@
-# Prototipo academico para el monitoreo y detección de lenguaje agresivo multimodal para prevenir el maltrato a Adultos Mayores.
+# Prototipo SIIA: Detección de lenguaje agresivo multimodal
 
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![HuggingFace](https://img.shields.io/badge/huggingface-%23FFD21E.svg?style=for-the-badge&logo=huggingface&logoColor=white)
 
-<p>
-Este repositorio forma parte del trabajo 
-"Monitoreo y detección de lenguaje agresivo multimodal para prevenir el maltrato a Adultos Mayores." del Equipo 3004H para la asignatura de Seminario de Innovación en Inteligencia Artificial (SIIA) de la Maestria en Inteligencia Artificial de UNIR México.<br> El trabajo tiene como objetivo desarrollar una herramienta tecnológica basada en Inteligencia Artificial (IA) para monitorizar y prevenir el maltrato psicológico hacia el adulto mayor, facilitando un envejecimiento saludable de los mismos. <br>
-La solución propuesta capturará conversaciones, transcribirá el audio a texto y detectará agresiones mediante un enfoque multimodal: análisis de la tonalidad en el audio y análisis semántico del texto.  
-</p>
+Este repositorio contiene un prototipo académico para el monitoreo y detección de lenguaje agresivo en conversaciones, con enfoque multimodal (audio + texto). El trabajo fue desarrollado por el Equipo 3004H para la asignatura de Seminario de Innovación en Inteligencia Artificial (SIIA), Maestría en Inteligencia Artificial de UNIR México.
 
-<!-- TODO: DEMO LINK AL DEMO -->
+La solución combina:
+
+- Transcripción automática del audio (ASR).
+- Análisis semántico de texto para detección de agresividad.
+- Análisis acústico/prosódico del audio.
+- Ensamble final para clasificar el nivel de riesgo/agresividad.
 
 ## Tabla de contenido
 
 - [1. Autores](#1-autores)
-- [2. Objetivos](#2-objetivos)
-- [3. Carácteristicas](#3-caracteristicas)
-- [4. Arquitectura](#4-arquitectura-del-sistema)
-- [5. Tecnologías](#5-tecnologías)
-- [6. Estructura del repositorio](#6-estructura-del-repositorio)
-- [7. Requisitos](#7-requisitos)
-- [8. Instalación](#8-instalación)
-- [9. Uso](#9-uso)
-- [10. Datasets](#10-datasets)
+- [2. Objetivo](#2-objetivo)
+- [3. Arquitectura](#3-arquitectura)
+- [4. Estructura del repositorio](#4-estructura-del-repositorio)
+- [5. Requisitos](#5-requisitos)
+- [6. Ejecución rápida con Docker](#6-ejecución-rápida-con-docker)
+- [7. Ejecución local por servicio](#7-ejecución-local-por-servicio)
+- [8. Scripts de evaluación y datos](#8-scripts-de-evaluación-y-datos)
 
-### 1. Autores
+## 1. Autores
 
-| Apellidos            | Nombres         |
-| -------------------- | --------------- |
-| Martínez Cruz        | Luis Arturo.    |
-| Rentería Ramírez     | Mariana Jazmín. |
-| Rodríguez Valladares | Olga Sarahi.    |
+| Apellidos            | Nombres        |
+| -------------------- | -------------- |
+| Martínez Cruz        | Luis Arturo    |
+| Rentería Ramírez     | Mariana Jazmín |
+| Rodríguez Valladares | Olga Sarahi    |
 
-### 2. Objetivos
+## 2. Objetivo
 
-El objetivo principal es implementar una solución de IA que realice análisis de tonalidades en voz y clasificación de texto para identificar leguaje agresivo de forma automática.
+Implementar una solución de IA multimodal que permita identificar lenguaje agresivo en conversaciones casi en tiempo real, priorizando recall alto para reducir falsos negativos en escenarios de posible maltrato psicológico hacia personas adultas mayores.
 
-Los objetivos específicos de la solución de IA son:
+## 3. Arquitectura
 
-- Capturar y transcribir conversaciones de dos personas casi en tiempo real.
-  - Mantener una latencia de máximo 500ms.
-  - Mantener una Word Error Rate de entre 0 y15%.
-- Analizar el audio para clasificar tonalidades de agresividad en la voz.
-- Analizar el texto para clasificación de palabras agresivas.
-- Combinar ambos análisis bajo un ensamble para determinar la presencia de lenguaje agresivo.
-- Obtener métricas de F1 Score en los modelos de clasificación y ensamble iguales o mayores a 0.85, dando prioridad al recall para minimizar los falso negativos; es decir:
-  - Valores de recall y precisiones superiores a 0.85
-  - Mayor prioridad a valores de recall alto vs precisión.
-- Desarrollar un prototipo mínimo viable (MVP) con los puntos anteriores.
+El prototipo actual se ejecuta como una arquitectura de microservicios orquestada con Docker Compose:
 
-### 3. Carácteristicas
+- `caddy_proxy`: reverse proxy y servidor estático del frontend.
+- `redis_broker`: bus de mensajería (Pub/Sub).
+- `ws_gateway`: entrada WebSocket y enrutamiento de sesiones.
+- `asr_worker`: transcripción de audio.
+- `robertuito_worker`: clasificación semántica en texto.
+- `wav2vec_worker`: clasificación acústica/prosódica.
+- `ensemble_worker`: integración y veredicto final.
 
-- Capturar audio de forma estable.
-- Generar y almacenar correctamente los archivos creados.
-- Transcribir conversaciones, mostrar el texto en pantalla y almacenarlo en un archivo.
-- Rrealizar análisis prosódico (volumen y tonos agresivos) del audio y mostrar una señal visual en pantalla cuando detecte patrones agresivos.
-- Identificar palabras agresivas en la transcripción y resaltarlas al mostrar en pantalla.
-- Mostrar en pantalla los resultados inntegrados de los modelos prosódico y léxico.
+Flujo general:
 
-### 4. Arquitectura del sistema
+1. El frontend envía audio al gateway por WebSocket.
+2. El gateway publica audio en Redis.
+3. Los workers procesan y publican resultados parciales.
+4. El ensamble emite el resultado final.
+5. El gateway devuelve salidas al cliente en tiempo real.
 
-![Diagrama de la solucion](/resources/diagrama_solucion.png)
+## 4. Estructura del repositorio
 
-### 5. Tecnologías
+```text
+Prototipo_SIIA/
+├── README.md
+├── evaluacion_modelo_v3.py
+├── test_whisper_chunk.py
+├── test_whisper_sin_chunk.py
+├── 220_test_WER_whisper_Correcto.py
+├── Set de datos/
+│   ├── Clasificaciones_reales_220.csv
+│   ├── Nombre Archivo VS Frase_Clasif.txt
+│   └── qa_audios_asr225/
+└── multimodal-cluster/
+    ├── Caddyfile
+    ├── docker-compose.yml
+    ├── frontend/
+    ├── gateway/
+    ├── asr_worker/
+    ├── robertuito_worker/
+    ├── wav2vec_worker/
+    └── ensemble_worker/
+```
 
-Se utiliza Python como lenguaje de programación.
+## 5. Requisitos
 
-- Whisper
-- Scikit learn
+- Docker Engine 24+.
+- Docker Compose v2.
+- Git. 
 
-<!-- Explicar -->
+## 6. Ejecución rápida con Docker
 
-### 6. Estructura del repositorio
+Desde la raíz del repositorio:
 
-<!-- Front -->
-<!-- Back -->
+```bash
+cd multimodal-cluster
+docker compose up --build
+```
 
-### 7. Requisitos
+Accesos por defecto:
 
-<!-- Que programas necesito para levantar el repo  -->
+- Frontend: `http://localhost:80`
+- Gateway (health): `http://localhost:8000` (si se expone manualmente en local)
+- Redis: `localhost:6379` (solo para pruebas locales)
 
-### 8. Instalación
+Para detener:
 
-<!-- Que necesito instarlar para  -->
-<!-- Front -->
-<!-- Back -->
+```bash
+docker compose down
+```
 
-### 9. Uso
+## 7. Ejecución local por servicio
 
-<!-- Como se puede levantar el repo -->
-<!-- Front -->
-<!-- Back -->
+Si prefieres levantar componentes sin Docker, entra a cada carpeta de servicio, crea un entorno virtual e instala dependencias con su `requirements.txt`.
 
-### 10. Datasets
+Ejemplo genérico:
 
-<!-- para entrenamiento -->
-<!--  -->
+```bash
+cd multimodal-cluster/gateway
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# Linux/macOS
+# source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
 
-### 11. Estado del proyecto
+Nota: para funcionamiento completo necesitas Redis activo y la comunicación entre todos los workers.
 
-Actualmente el prototipo academico se encuentra en fase de desarrollo.
+## 8. Scripts de evaluación y datos
+
+En la raíz del proyecto encontrarás scripts para pruebas y evaluación de modelos ASR/ensamble, por ejemplo:
+
+- `evaluacion_modelo_v3.py`
+- `test_whisper_chunk.py`
+- `test_whisper_sin_chunk.py`
+- `220_test_WER_whisper_Correcto.py`
+
+Los conjuntos de datos están en `Set de datos/` y en `multimodal-cluster/frontend/qa_audios_asr225/`.
